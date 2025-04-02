@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Apple, Facebook } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type React from "react";
@@ -25,7 +26,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="flex min-h-screen w-full items-center justify-center bg-cover bg-center  absolute inset-0 "
+      className="flex min-h-screen w-full items-center justify-between pl-[220px] pr-[220px] bg-cover bg-center  absolute inset-0"
       style={{ backgroundImage: "url('/login-bg.png')" }}
     >
       <div
@@ -36,15 +37,31 @@ export default function LoginPage() {
         }}
       ></div>
 
-      <div className="relative z-10 bg-white bg-opacity-90 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-sm uppercase text-gray-600 font-semibold ">
-          WELCOME BACK!
-        </h2>
+      <div className="relative ">
+        <div className="flex flex-col text-white justify-baseline space-y-30">
+          <Image
+            src="/logo_highbridge.png"
+            alt="HighBridge"
+            width={180}
+            height={40}
+          />
+          <div className="w-[380px] h-[85px] text-justify">
+            <p className="text-3xl font-bold mb-4">Building the Future ...</p>
+            <p className="text-md  font-extralight">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute z-10 bottom-0 left-[780px] bg-white bg-opacity-90 p-8 rounded-t-lg shadow-lg w-full max-w-md">
+        <h2 className="text-sm uppercase font-medium ">WELCOME BACK!</h2>
         <h1 className="text-2xl font-bold mt-1">Log In to your Account</h1>
 
         <form onSubmit={handleLogin} className="space-y-6 mt-6">
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
+          <div className="space-y-2 text-[#BDBDBD]">
+            <label htmlFor="email" className="text-sm text-[#4F4F4F]">
               Email
             </label>
             <Input
@@ -54,11 +71,12 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="text-[#BDBDBD]"
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium">
+            <label htmlFor="password" className="text-sm text-[#4F4F4F]">
               Password
             </label>
             <Input
