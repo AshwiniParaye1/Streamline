@@ -1,0 +1,317 @@
+"use client";
+
+import type React from "react";
+
+import { DashboardHeader } from "@/components/dashboard-header";
+import { DeleteWorkflowModal } from "@/components/modals/delete-workflow-modal";
+import { ExecuteWorkflowModal } from "@/components/modals/execute-workflow-modal";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from "@/components/ui/pagination";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
+import { ExecutionHistory } from "@/components/workflow/execution-history";
+import { Download, MoreVertical, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+// Mock data for workflows
+const mockWorkflows = Array(15)
+  .fill(null)
+  .map((_, i) => ({
+    id: `#${494 + i}`,
+    name: `Workflow Name here...`,
+    lastEdited: "Zubin Khanna | 22:43 IST - 28/05",
+    description: "Some Description Here Regarding The Flow..",
+    isFavorite: i === 0,
+    executions: [
+      {
+        timestamp: "28/05 - 22:43 IST",
+        status: i % 3 === 0 ? ("Passed" as const) : ("Failed" as const)
+      },
+      { timestamp: "28/05 - 22:43 IST", status: "Failed" as const },
+      { timestamp: "28/05 - 22:43 IST", status: "Failed" as const }
+    ]
+  }));
+
+export default function DashboardPage() {
+  const [workflows, setWorkflows] = useState(mockWorkflows);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedWorkflow, setExpandedWorkflow] = useState<number | null>(null);
+  const router = useRouter();
+
+  // Modal states
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isExecuteModalOpen, setIsExecuteModalOpen] = useState(false);
+  const [selectedWorkflowIndex, setSelectedWorkflowIndex] = useState<
+    number | null
+  >(null);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    // In a real app, you would filter from the API
+  };
+
+  const toggleFavorite = (index: number) => {
+    const updatedWorkflows = [...workflows];
+    updatedWorkflows[index].isFavorite = !updatedWorkflows[index].isFavorite;
+    setWorkflows(updatedWorkflows);
+  };
+
+  const handleEdit = (id: string) => {
+    router.push(`/workflow-editor/${id.replace("#", "")}`);
+  };
+
+  const handleExecute = (index: number) => {
+    setSelectedWorkflowIndex(index);
+    setIsExecuteModalOpen(true);
+  };
+
+  const confirmExecute = () => {
+    if (selectedWorkflowIndex !== null) {
+      // In a real app, you would trigger the workflow execution
+      console.log(`Executing workflow ${workflows[selectedWorkflowIndex].id}`);
+      setIsExecuteModalOpen(false);
+    }
+  };
+
+  const handleDelete = (index: number) => {
+    setSelectedWorkflowIndex(index);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedWorkflowIndex !== null) {
+      const updatedWorkflows = [...workflows];
+      updatedWorkflows.splice(selectedWorkflowIndex, 1);
+      setWorkflows(updatedWorkflows);
+      setIsDeleteModalOpen(false);
+    }
+  };
+
+  const toggleExpand = (index: number) => {
+    setExpandedWorkflow(expandedWorkflow === index ? null : index);
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <DashboardHeader />
+
+      <main className="flex-1 container mx-auto py-6 px-4">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Workflow Builder</h1>
+        </div>
+
+        <div className="flex justify-between items-center mb-6">
+          <div className="relative w-full max-w-md">
+            <Input
+              type="text"
+              placeholder="Search By Workflow Name/ID"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="pl-10"
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+
+          <Button onClick={() => router.push("/workflow-editor/new")}>
+            + Create New Process
+          </Button>
+        </div>
+
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="font-semibold">Workflow Name</TableHead>
+                <TableHead className="font-semibold">ID</TableHead>
+                <TableHead className="font-semibold">Last Edited On</TableHead>
+                <TableHead className="font-semibold">Description</TableHead>
+                <TableHead className="w-[200px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {workflows.slice(0, 8).map((workflow, index) => (
+                <>
+                  <TableRow
+                    key={index}
+                    className={expandedWorkflow === index ? "bg-gray-50" : ""}
+                  >
+                    <TableCell>{workflow.name}</TableCell>
+                    <TableCell>{workflow.id}</TableCell>
+                    <TableCell>{workflow.lastEdited}</TableCell>
+                    <TableCell>{workflow.description}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => toggleFavorite(index)}
+                        >
+                          <Star
+                            className={`h-5 w-5 ${
+                              workflow.isFavorite
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-gray-400"
+                            }`}
+                          />
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          onClick={() => handleExecute(index)}
+                        >
+                          Execute
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          onClick={() => handleEdit(workflow.id)}
+                        >
+                          Edit
+                        </Button>
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreVertical className="h-5 w-5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                            <DropdownMenuItem>Rename</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(index)}
+                              className="text-red-600"
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => toggleExpand(index)}
+                        >
+                          {expandedWorkflow === index ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-5 w-5"
+                            >
+                              <polyline points="18 15 12 9 6 15"></polyline>
+                            </svg>
+                          ) : (
+                            <Download className="h-5 w-5" />
+                          )}
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  {expandedWorkflow === index && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="bg-gray-50 px-8 py-4">
+                        <ExecutionHistory executions={workflow.executions} />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </>
+              ))}
+            </TableBody>
+          </Table>
+
+          <div className="py-4 px-6">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#" isActive>
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">2</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">3</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <span className="flex h-9 items-center justify-center px-4">
+                    ...
+                  </span>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">15</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext href="#" />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        </div>
+      </main>
+
+      {/* Modals */}
+      {selectedWorkflowIndex !== null && (
+        <>
+          <DeleteWorkflowModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            onConfirm={confirmDelete}
+            workflowName={workflows[selectedWorkflowIndex]?.name || ""}
+          />
+
+          <ExecuteWorkflowModal
+            isOpen={isExecuteModalOpen}
+            onClose={() => setIsExecuteModalOpen(false)}
+            onConfirm={confirmExecute}
+            workflowName={workflows[selectedWorkflowIndex]?.name || ""}
+          />
+        </>
+      )}
+    </div>
+  );
+}
