@@ -60,7 +60,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold mt-1">Log In to your Account</h1>
 
         <form onSubmit={handleLogin} className="space-y-6 mt-6">
-          <div className="space-y-2 text-[#BDBDBD]">
+          <div className="space-y-2">
             <label htmlFor="email" className="text-sm text-[#4F4F4F]">
               Email
             </label>
