@@ -1,16 +1,8 @@
 "use client";
 
-import {
-  ChevronLeft,
-  Minus,
-  Plus,
-  RotateCcw,
-  RotateCw,
-  Save,
-  Trash
-} from "lucide-react";
+import { ChevronLeft, Minus, Plus, Save, Trash } from "lucide-react";
 import { useCallback, useState } from "react";
-import { GoDash } from "react-icons/go";
+import { PiArrowArcLeftBold, PiArrowArcRightBold } from "react-icons/pi";
 import ReactFlow, {
   addEdge,
   Background,
@@ -33,6 +25,7 @@ import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
 
 // Types
 type ActionType = "email" | "apiCall" | "textbox" | null;
@@ -344,12 +337,11 @@ function FlowDiagram() {
         {/* Top Panel */}
         <Panel position="top-left">
           <div className="flex gap-4 items-center justify-between p-4 bg-white border-b w-full">
-            <button className="flex items-center gap-2 text-gray-700 hover:text-gray-900">
+            <button className="flex items-center text-sm font-semibold underline text-gray-700 hover:text-gray-900">
               <ChevronLeft className="w-4 h-4" />
-              <GoDash />
               Go Back
             </button>
-            <div className="text-lg font-medium">Untitled</div>
+            <div className="text-sm font-semibold">Untitled</div>
             {/* Red Save Button opens the Save Modal */}
             <Button
               variant="ghost"
@@ -364,10 +356,10 @@ function FlowDiagram() {
         <Panel position="bottom-left">
           <div className="flex gap-2">
             <button className="bg-white p-2 rounded-lg shadow hover:bg-gray-50">
-              <RotateCcw className="w-4 h-4" color="black" />
+              <PiArrowArcLeftBold className="w-4 h-4" color="black" />
             </button>
             <button className="bg-white p-2 rounded-lg shadow hover:bg-gray-50">
-              <RotateCw className="w-4 h-4" color="black" />
+              <PiArrowArcRightBold className="w-4 h-4" color="black" />
             </button>
           </div>
         </Panel>
@@ -406,30 +398,44 @@ function FlowDiagram() {
       <Dialog open={showSaveModal} onOpenChange={setShowSaveModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save Flow</DialogTitle>
+            <DialogTitle>Save your workflow</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 mt-4">
+
+          <div className="space-y-4 mt-4 pb-4">
+            {/* added bottom padding */}
             <div>
-              <Label htmlFor="flowName">Flow Name</Label>
+              <Label htmlFor="flowName" className="mb-3 text-sm font-light">
+                Name
+              </Label>
               <Input
                 id="flowName"
                 value={flowName}
                 onChange={(e) => setFlowName(e.target.value)}
+                placeholder="Name here.."
               />
             </div>
-            <div>
-              <Label htmlFor="flowDesc">Description</Label>
-              <Input
+            <div className="mb-10">
+              <Label htmlFor="flowDesc" className="mb-3 text-sm font-light">
+                Description
+              </Label>
+              <Textarea
                 id="flowDesc"
                 value={flowDescription}
                 onChange={(e) => setFlowDescription(e.target.value)}
+                rows={5}
+                className="min-h-[120px]"
+                placeholder="Write here.."
               />
             </div>
+          </div>
+
+          {/* Save button at bottom right */}
+          <div className="flex justify-end mt-2">
             <Button
-              className="w-full bg-red-600 hover:bg-red-700 text-white"
+              className="bg-red-600 hover:bg-red-700 text-white"
               onClick={handleSave}
             >
-              Save Flow
+              Save
             </Button>
           </div>
         </DialogContent>
