@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog";
-import { X } from "lucide-react";
 
 interface DeleteWorkflowModalProps {
   isOpen: boolean;
@@ -20,36 +20,30 @@ interface DeleteWorkflowModalProps {
 export function DeleteWorkflowModal({
   isOpen,
   onClose,
-  onConfirm,
-  workflowName
+  onConfirm
 }: DeleteWorkflowModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="gap-0">
-          <div className="flex justify-end">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="h-8 w-8"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          <DialogTitle className="text-center text-xl">
-            &quot;Are You Sure You Want To Delete &apos;{workflowName}&apos;?
+      <DialogContent className="w-full p-10">
+        <DialogHeader>
+          <DialogTitle className="w-full text-center text-md font-semibold pt-10">
+            Are you sure you want to delete
+            <span className=""> &apos;Process_name&apos; </span>?
           </DialogTitle>
-          <DialogDescription className="text-center text-red-500 pt-2">
-            You Cannot Undo This Step
+          <DialogDescription className="text-center font-medium text-red-500 pt-2  pb-10">
+            You cannot undo this step.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="flex justify-end gap-2 pt-6">
-          <Button variant="outline" onClick={onClose}>
-            No
-          </Button>
-          <Button onClick={onConfirm}>Yes</Button>
-        </DialogFooter>
+        <div className="border-t-2">
+          <DialogFooter className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={onConfirm}>
+              Yes
+            </Button>
+            <Button variant="outline" onClick={onClose}>
+              No
+            </Button>
+          </DialogFooter>{" "}
+        </div>
       </DialogContent>
     </Dialog>
   );
