@@ -28,6 +28,7 @@ import ReactFlow, {
   useReactFlow
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { Button } from "./ui/button";
 
 // Types
 type ActionType = "email" | "apiCall" | "textbox" | null;
@@ -50,20 +51,20 @@ const ActionToolbox = ({
 }) => {
   return (
     <div className="absolute bg-white top-10 right-10 border rounded shadow-md p-4 z-10">
-      <h3 className="text-lg font-semibold mb-2">Select Action</h3>
       <div className="flex flex-row gap-2">
         {["email", "apiCall", "textbox"].map((type) => (
-          <button
+          <Button
+            variant={"outline"}
             key={type}
-            className="bg-blue-100 hover:bg-blue-200 p-2 rounded"
+            className="p-4"
             onClick={() => onActionSelect(nodeId, type as ActionType)}
           >
             {type}
-          </button>
+          </Button>
         ))}
       </div>
       <button
-        className="mt-4 text-gray-600 hover:text-gray-800"
+        className="mt-4 ml-1 text-gray-600 hover:text-gray-800"
         onClick={onClose}
       >
         Close
@@ -77,7 +78,7 @@ const ActionNode = ({ id, data }: { id: string; data: ActionNodeData }) => {
   const { actionType, onNodeDelete } = data;
 
   const labelMap = {
-    email: "Email Action",
+    email: "Email",
     apiCall: "API Call",
     textbox: "Textbox"
   };
@@ -354,10 +355,7 @@ function FlowDiagram() {
               className="w-6 h-6 bg-[#8ba870] rounded-full cursor-pointer hover:opacity-90"
               onClick={resetZoom}
             ></div>
-            <button
-              className="bg-white p-2 rounded-lg shadow hover:bg-gray-50"
-              onClick={onZoomOut}
-            >
+            <button className="p-2" onClick={onZoomOut}>
               <Minus className="w-4 h-4" color="black" />
             </button>
             <div className="w-32 h-1 bg-gray-300 rounded-full">
@@ -366,10 +364,7 @@ function FlowDiagram() {
                 style={{ width: `${((zoom - 0.5) * 100) / 1.5}%` }}
               ></div>
             </div>
-            <button
-              className="bg-white p-2 rounded-lg shadow hover:bg-gray-50"
-              onClick={onZoomIn}
-            >
+            <button className="p-2" onClick={onZoomIn}>
               <Plus className="w-4 h-4" color="black" />
             </button>
           </div>
