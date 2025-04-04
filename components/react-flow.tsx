@@ -1,7 +1,8 @@
 "use client";
 
-import { ChevronLeft, Minus, Plus, Save, Trash } from "lucide-react";
+import { ChevronLeft, Minus, Plus, Save } from "lucide-react";
 import { useCallback, useState } from "react";
+import { LiaTrashAlt } from "react-icons/lia";
 import { PiArrowArcLeftBold, PiArrowArcRightBold } from "react-icons/pi";
 import ReactFlow, {
   addEdge,
@@ -84,7 +85,7 @@ const ActionNode = ({ id, data }: { id: string; data: ActionNodeData }) => {
       <Handle type="target" position={Position.Top} />
       <div className="text-center">{labelMap[actionType!] || "Action"}</div>
       <button className="rounded-full p-1" onClick={() => onNodeDelete(id)}>
-        <Trash className="w-4 h-4 text-red-500" />
+        <LiaTrashAlt className="w-4 h-4 text-red-500" />
       </button>
       <Handle type="source" position={Position.Bottom} />
     </div>
