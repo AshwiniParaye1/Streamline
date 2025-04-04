@@ -2,33 +2,19 @@
 
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Globe, Mail, Save, X } from "lucide-react";
-import Image from "next/image";
+import Flow from "@/components/react-flow";
+import { Globe, Mail, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import ReactFlow, {
+import {
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
-  Background,
   Connection,
-  Controls,
   Edge,
   MarkerType,
   Node,
-  NodeTypes,
-  Panel
+  NodeTypes
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -317,222 +303,226 @@ export default function WorkflowEditorNewPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f9f6eb]">
-      {/* Header */}
-      <div className="flex gap-4 m-6 items-center">
-        <Image src={"/sidebar1.png"} alt="" width={30} height={30} />
-        <h1 className="text-xl font-semibold">
-          Workflow Builder - New Process
-        </h1>
-      </div>
+    // <div className="flex min-h-screen flex-col bg-[#f9f6eb]">
+    //   {/* Header */}
+    //   <div className="flex gap-4 m-6 items-center">
+    //     <Image src={"/sidebar1.png"} alt="" width={30} height={30} />
+    //     <h1 className="text-xl font-semibold">
+    //       Workflow Builder - New Process
+    //     </h1>
+    //   </div>
 
-      {/* Editor Controls */}
-      <div className="flex justify-between items-center px-6 py-4 border-b bg-white mx-6 rounded-t-md">
-        <div className="flex items-center gap-4">
-          <Input
-            value={workflowName}
-            onChange={(e) => setWorkflowName(e.target.value)}
-            className="font-semibold text-lg w-64"
-            placeholder="Enter workflow name"
-          />
-          <Input
-            value={workflowDescription}
-            onChange={(e) => setWorkflowDescription(e.target.value)}
-            className="w-64"
-            placeholder="Enter workflow description"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => router.push("/dashboard")}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave}>
-            <Save className="mr-2 h-4 w-4" /> Save Workflow
-          </Button>
-        </div>
-      </div>
+    //   {/* Editor Controls */}
+    //   <div className="flex justify-between items-center px-6 py-4 border-b bg-white mx-6 rounded-t-md">
+    //     <div className="flex items-center gap-4">
+    //       <Input
+    //         value={workflowName}
+    //         onChange={(e) => setWorkflowName(e.target.value)}
+    //         className="font-semibold text-lg w-64"
+    //         placeholder="Enter workflow name"
+    //       />
+    //       <Input
+    //         value={workflowDescription}
+    //         onChange={(e) => setWorkflowDescription(e.target.value)}
+    //         className="w-64"
+    //         placeholder="Enter workflow description"
+    //       />
+    //     </div>
+    //     <div className="flex gap-2">
+    //       <Button variant="outline" onClick={() => router.push("/dashboard")}>
+    //         Cancel
+    //       </Button>
+    //       <Button onClick={handleSave}>
+    //         <Save className="mr-2 h-4 w-4" /> Save Workflow
+    //       </Button>
+    //     </div>
+    //   </div>
 
-      {/* ReactFlow Canvas with toolbox */}
-      <div
-        className="flex flex-1 bg-white mx-6 mb-6 rounded-b-md overflow-hidden"
-        style={{ height: "calc(100vh - 200px)" }}
-      >
-        {/* Tools sidebar */}
-        <div className="w-64 border-r p-4 bg-gray-50">
-          <h3 className="font-medium mb-4">Component Toolbox</h3>
+    //   {/* ReactFlow Canvas with toolbox */}
+    //   <div
+    //     className="flex flex-1 bg-white mx-6 mb-6 rounded-b-md overflow-hidden"
+    //     style={{ height: "calc(100vh - 200px)" }}
+    //   >
+    //     {/* Tools sidebar */}
+    //     <div className="w-64 border-r p-4 bg-gray-50">
+    //       <h3 className="font-medium mb-4">Component Toolbox</h3>
 
-          <div className="space-y-3">
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => handleAddNode("api")}
-            >
-              <Globe className="mr-2 h-4 w-4" /> API Call
-            </Button>
+    //       <div className="space-y-3">
+    //         <Button
+    //           variant="outline"
+    //           className="w-full justify-start"
+    //           onClick={() => handleAddNode("api")}
+    //         >
+    //           <Globe className="mr-2 h-4 w-4" /> API Call
+    //         </Button>
 
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => handleAddNode("email")}
-            >
-              <Mail className="mr-2 h-4 w-4" /> Email
-            </Button>
-          </div>
+    //         <Button
+    //           variant="outline"
+    //           className="w-full justify-start"
+    //           onClick={() => handleAddNode("email")}
+    //         >
+    //           <Mail className="mr-2 h-4 w-4" /> Email
+    //         </Button>
+    //       </div>
 
-          <div className="mt-8">
-            <h3 className="font-medium mb-4">Instructions</h3>
-            <ul className="text-sm space-y-2">
-              <li>• Drag nodes to position them</li>
-              <li>• Connect nodes by dragging from one handle to another</li>
-              <li>• Click on nodes to configure them</li>
-              <li>• Use controls to zoom and pan</li>
-            </ul>
-          </div>
-        </div>
+    //       <div className="mt-8">
+    //         <h3 className="font-medium mb-4">Instructions</h3>
+    //         <ul className="text-sm space-y-2">
+    //           <li>• Drag nodes to position them</li>
+    //           <li>• Connect nodes by dragging from one handle to another</li>
+    //           <li>• Click on nodes to configure them</li>
+    //           <li>• Use controls to zoom and pan</li>
+    //         </ul>
+    //       </div>
+    //     </div>
 
-        {/* ReactFlow canvas */}
-        <div className="flex-1" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onNodeClick={onNodeClick}
-            nodeTypes={nodeTypes}
-            onInit={setReactFlowInstance}
-            onDragOver={onDragOver}
-            fitView
-          >
-            <Background />
-            <Controls />
-            <Panel position="top-right">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  if (reactFlowInstance) {
-                    reactFlowInstance.fitView({ padding: 0.2 });
-                  }
-                }}
-              >
-                Fit View
-              </Button>
-            </Panel>
-          </ReactFlow>
-        </div>
+    //     {/* ReactFlow canvas */}
+    //     <div className="flex-1" ref={reactFlowWrapper}>
+    //       <ReactFlow
+    //         nodes={nodes}
+    //         edges={edges}
+    //         onNodesChange={onNodesChange}
+    //         onEdgesChange={onEdgesChange}
+    //         onConnect={onConnect}
+    //         onNodeClick={onNodeClick}
+    //         nodeTypes={nodeTypes}
+    //         onInit={setReactFlowInstance}
+    //         onDragOver={onDragOver}
+    //         fitView
+    //       >
+    //         <Background />
+    //         <Controls />
+    //         <Panel position="top-right">
+    //           <Button
+    //             size="sm"
+    //             variant="outline"
+    //             onClick={() => {
+    //               if (reactFlowInstance) {
+    //                 reactFlowInstance.fitView({ padding: 0.2 });
+    //               }
+    //             }}
+    //           >
+    //             Fit View
+    //           </Button>
+    //         </Panel>
+    //       </ReactFlow>
+    //     </div>
 
-        {/* Node configuration panel - shown when a node is selected */}
-        {showNodeConfig && (
-          <div className="w-80 border-l p-4 bg-gray-50">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-medium">
-                Configure{" "}
-                {selectedNode?.type === "apiNode" ? "API Call" : "Email"}
-              </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowNodeConfig(false)}
-              >
-                <X size={16} />
-              </Button>
-            </div>
+    //     {/* Node configuration panel - shown when a node is selected */}
+    //     {showNodeConfig && (
+    //       <div className="w-80 border-l p-4 bg-gray-50">
+    //         <div className="flex justify-between items-center mb-4">
+    //           <h3 className="font-medium">
+    //             Configure{" "}
+    //             {selectedNode?.type === "apiNode" ? "API Call" : "Email"}
+    //           </h3>
+    //           <Button
+    //             variant="ghost"
+    //             size="sm"
+    //             onClick={() => setShowNodeConfig(false)}
+    //           >
+    //             <X size={16} />
+    //           </Button>
+    //         </div>
 
-            {selectedNode?.type === "apiNode" && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="endpoint">API Endpoint</Label>
-                  <Input
-                    id="endpoint"
-                    value={nodeConfig.apiEndpoint}
-                    onChange={(e) =>
-                      setNodeConfig({
-                        ...nodeConfig,
-                        apiEndpoint: e.target.value
-                      })
-                    }
-                    placeholder="https://api.example.com"
-                  />
-                </div>
+    //         {selectedNode?.type === "apiNode" && (
+    //           <div className="space-y-4">
+    //             <div>
+    //               <Label htmlFor="endpoint">API Endpoint</Label>
+    //               <Input
+    //                 id="endpoint"
+    //                 value={nodeConfig.apiEndpoint}
+    //                 onChange={(e) =>
+    //                   setNodeConfig({
+    //                     ...nodeConfig,
+    //                     apiEndpoint: e.target.value
+    //                   })
+    //                 }
+    //                 placeholder="https://api.example.com"
+    //               />
+    //             </div>
 
-                <div>
-                  <Label htmlFor="method">Method</Label>
-                  <Select
-                    value={nodeConfig.apiMethod}
-                    onValueChange={(value) =>
-                      setNodeConfig({ ...nodeConfig, apiMethod: value })
-                    }
-                  >
-                    <SelectTrigger id="method">
-                      <SelectValue placeholder="Select method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="GET">GET</SelectItem>
-                      <SelectItem value="POST">POST</SelectItem>
-                      <SelectItem value="PUT">PUT</SelectItem>
-                      <SelectItem value="DELETE">DELETE</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
+    //             <div>
+    //               <Label htmlFor="method">Method</Label>
+    //               <Select
+    //                 value={nodeConfig.apiMethod}
+    //                 onValueChange={(value) =>
+    //                   setNodeConfig({ ...nodeConfig, apiMethod: value })
+    //                 }
+    //               >
+    //                 <SelectTrigger id="method">
+    //                   <SelectValue placeholder="Select method" />
+    //                 </SelectTrigger>
+    //                 <SelectContent>
+    //                   <SelectItem value="GET">GET</SelectItem>
+    //                   <SelectItem value="POST">POST</SelectItem>
+    //                   <SelectItem value="PUT">PUT</SelectItem>
+    //                   <SelectItem value="DELETE">DELETE</SelectItem>
+    //                 </SelectContent>
+    //               </Select>
+    //             </div>
+    //           </div>
+    //         )}
 
-            {selectedNode?.type === "emailNode" && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="to">To</Label>
-                  <Input
-                    id="to"
-                    value={nodeConfig.emailTo}
-                    onChange={(e) =>
-                      setNodeConfig({ ...nodeConfig, emailTo: e.target.value })
-                    }
-                    placeholder="recipient@example.com"
-                  />
-                </div>
+    //         {selectedNode?.type === "emailNode" && (
+    //           <div className="space-y-4">
+    //             <div>
+    //               <Label htmlFor="to">To</Label>
+    //               <Input
+    //                 id="to"
+    //                 value={nodeConfig.emailTo}
+    //                 onChange={(e) =>
+    //                   setNodeConfig({ ...nodeConfig, emailTo: e.target.value })
+    //                 }
+    //                 placeholder="recipient@example.com"
+    //               />
+    //             </div>
 
-                <div>
-                  <Label htmlFor="subject">Subject</Label>
-                  <Input
-                    id="subject"
-                    value={nodeConfig.emailSubject}
-                    onChange={(e) =>
-                      setNodeConfig({
-                        ...nodeConfig,
-                        emailSubject: e.target.value
-                      })
-                    }
-                    placeholder="Email subject"
-                  />
-                </div>
+    //             <div>
+    //               <Label htmlFor="subject">Subject</Label>
+    //               <Input
+    //                 id="subject"
+    //                 value={nodeConfig.emailSubject}
+    //                 onChange={(e) =>
+    //                   setNodeConfig({
+    //                     ...nodeConfig,
+    //                     emailSubject: e.target.value
+    //                   })
+    //                 }
+    //                 placeholder="Email subject"
+    //               />
+    //             </div>
 
-                <div>
-                  <Label htmlFor="body">Email Body</Label>
-                  <Textarea
-                    id="body"
-                    value={nodeConfig.emailBody}
-                    onChange={(e) =>
-                      setNodeConfig({
-                        ...nodeConfig,
-                        emailBody: e.target.value
-                      })
-                    }
-                    placeholder="Email content..."
-                    rows={5}
-                  />
-                </div>
-              </div>
-            )}
+    //             <div>
+    //               <Label htmlFor="body">Email Body</Label>
+    //               <Textarea
+    //                 id="body"
+    //                 value={nodeConfig.emailBody}
+    //                 onChange={(e) =>
+    //                   setNodeConfig({
+    //                     ...nodeConfig,
+    //                     emailBody: e.target.value
+    //                   })
+    //                 }
+    //                 placeholder="Email content..."
+    //                 rows={5}
+    //               />
+    //             </div>
+    //           </div>
+    //         )}
 
-            <div className="mt-6">
-              <Button onClick={updateSelectedNode} className="w-full">
-                Update Node
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
+    //         <div className="mt-6">
+    //           <Button onClick={updateSelectedNode} className="w-full">
+    //             Update Node
+    //           </Button>
+    //         </div>
+    //       </div>
+    //     )}
+    //   </div>
+    // </div>
+
+    <div>
+      <Flow />
     </div>
   );
 }
