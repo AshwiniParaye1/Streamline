@@ -10,6 +10,7 @@ import {
   Trash
 } from "lucide-react";
 import { useCallback, useState } from "react";
+import { GoDash } from "react-icons/go";
 import ReactFlow, {
   addEdge,
   Background,
@@ -29,6 +30,9 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 // Types
 type ActionType = "email" | "apiCall" | "textbox" | null;
@@ -39,7 +43,7 @@ type ActionNodeData = {
   onNodeDelete: (id: string) => void;
 };
 
-// Toolbox
+// Toolbox Component
 const ActionToolbox = ({
   nodeId,
   onActionSelect,
@@ -50,7 +54,7 @@ const ActionToolbox = ({
   onClose: () => void;
 }) => {
   return (
-    <div className="absolute bg-white top-10 right-10 border rounded shadow-md p-4 z-10">
+    <div className="absolute top-4 right-4 bg-white border rounded shadow-md p-4 z-10">
       <div className="flex flex-row gap-2">
         {["email", "apiCall", "textbox"].map((type) => (
           <Button
@@ -73,10 +77,9 @@ const ActionToolbox = ({
   );
 };
 
-// Action Node
+// Action Node Component
 const ActionNode = ({ id, data }: { id: string; data: ActionNodeData }) => {
   const { actionType, onNodeDelete } = data;
-
   const labelMap = {
     email: "Email",
     apiCall: "API Call",
@@ -87,10 +90,7 @@ const ActionNode = ({ id, data }: { id: string; data: ActionNodeData }) => {
     <div className="border border-gray-400 rounded-md p-2 bg-white relative w-60 flex items-center justify-between">
       <Handle type="target" position={Position.Top} />
       <div className="text-center">{labelMap[actionType!] || "Action"}</div>
-      <button
-        className="bg-red-50 hover:bg-red-200 rounded-full p-1"
-        onClick={() => onNodeDelete(id)}
-      >
+      <button className="rounded-full p-1" onClick={() => onNodeDelete(id)}>
         <Trash className="w-4 h-4 text-red-500" />
       </button>
       <Handle type="source" position={Position.Bottom} />
@@ -98,7 +98,7 @@ const ActionNode = ({ id, data }: { id: string; data: ActionNodeData }) => {
   );
 };
 
-// Circle Nodes
+// Circle Node Component
 const CircleNode = ({
   color,
   label,
@@ -147,7 +147,7 @@ const nodeTypes: NodeTypes = {
   actionNode: ActionNode
 };
 
-// Initial state
+// Initial state for nodes and edges
 const initialNodes: Node[] = [
   {
     id: "1",
@@ -167,7 +167,7 @@ const initialEdges: Edge[] = [
   { id: "1-2", source: "1", target: "2", type: "custom" }
 ];
 
-// Flow Component
+// Flow Diagram Component
 function FlowDiagram() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -175,27 +175,37 @@ function FlowDiagram() {
   const [zoom, setZoom] = useState(1);
   const reactFlow = useReactFlow();
 
-  // Toolbox selection
+  // Save modal states
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [flowName, setFlowName] = useState("");
+  const [flowDescription, setFlowDescription] = useState("");
+
+  // Handle Save: for demo, log details to console
+  const handleSave = () => {
+    console.log("Flow Name:", flowName);
+    console.log("Description:", flowDescription);
+    console.log("Nodes:", nodes);
+    console.log("Edges:", edges);
+    setShowSaveModal(false);
+    // Implement your save logic here (e.g. API call)
+  };
+
+  // Toolbox selection for action node type
   const handleActionSelect = (nodeId: string, actionType: ActionType) => {
     setNodes((nds) =>
       nds.map((node) =>
         node.id === nodeId
-          ? {
-              ...node,
-              data: { ...node.data, actionType }
-            }
+          ? { ...node, data: { ...node.data, actionType } }
           : node
       )
     );
     setToolboxNodeId(null);
   };
 
-  // Delete node + edges
+  // Delete a node and reconnect its edges
   const handleNodeDelete = (nodeId: string) => {
     const incoming = edges.find((e) => e.target === nodeId);
     const outgoing = edges.find((e) => e.source === nodeId);
-
-    // Reconnect if both exist
     if (incoming && outgoing) {
       const newEdge: Edge = {
         id: `${incoming.source}-${outgoing.target}-${Date.now()}`,
@@ -218,11 +228,10 @@ function FlowDiagram() {
         eds.filter((e) => e.source !== nodeId && e.target !== nodeId)
       );
     }
-
     setNodes((nds) => nds.filter((n) => n.id !== nodeId));
   };
 
-  // Add edge with + button
+  // Custom edge with the + button to add a node in between
   const edgeTypes: EdgeTypes = {
     custom: ({ id, source, target, sourceX, sourceY, targetX, targetY }) => {
       const edgePath = `M ${sourceX} ${sourceY} L ${targetX} ${targetY}`;
@@ -307,6 +316,12 @@ function FlowDiagram() {
 
   return (
     <div className="w-full h-screen bg-[#f5f2e8] relative">
+      {/* External floating circle (e.g. zoom reset) */}
+      <div
+        className="absolute top-4 right-4 z-50 w-6 h-6  rounded-full cursor-pointer hover:opacity-90"
+        onClick={resetZoom}
+      />
+
       <ReactFlow
         nodes={nodes.map((node) =>
           node.type === "actionNode"
@@ -325,16 +340,24 @@ function FlowDiagram() {
         fitView
       >
         <Background color="#000000" gap={16} size={1} />
+
+        {/* Top Panel */}
         <Panel position="top-left">
           <div className="flex gap-4 items-center justify-between p-4 bg-white border-b w-full">
             <button className="flex items-center gap-2 text-gray-700 hover:text-gray-900">
               <ChevronLeft className="w-4 h-4" />
+              <GoDash />
               Go Back
             </button>
             <div className="text-lg font-medium">Untitled</div>
-            <button className="text-gray-700 hover:text-gray-900">
-              <Save className="w-5 h-5" />
-            </button>
+            {/* Red Save Button opens the Save Modal */}
+            <Button
+              variant="ghost"
+              className="bg-none flex gap-2 items-center overflow-y-hidden"
+              onClick={() => setShowSaveModal(true)}
+            >
+              <Save className="w-6 h-6" fill="#facc15" />
+            </Button>
           </div>
         </Panel>
 
@@ -352,7 +375,7 @@ function FlowDiagram() {
         <Panel position="bottom-right" className="mb-4">
           <div className="flex items-center gap-2 bg-white p-2 rounded-xl">
             <div
-              className="w-6 h-6 bg-[#8ba870] rounded-full cursor-pointer hover:opacity-90"
+              className="w-6 h-6 bg-[#ABCD62] rounded-full cursor-pointer hover:opacity-90"
               onClick={resetZoom}
             ></div>
             <button className="p-2" onClick={onZoomOut}>
@@ -378,6 +401,39 @@ function FlowDiagram() {
           />
         )}
       </ReactFlow>
+
+      {/* Save Modal */}
+      <Dialog open={showSaveModal} onOpenChange={setShowSaveModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save Flow</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label htmlFor="flowName">Flow Name</Label>
+              <Input
+                id="flowName"
+                value={flowName}
+                onChange={(e) => setFlowName(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="flowDesc">Description</Label>
+              <Input
+                id="flowDesc"
+                value={flowDescription}
+                onChange={(e) => setFlowDescription(e.target.value)}
+              />
+            </div>
+            <Button
+              className="w-full bg-red-600 hover:bg-red-700 text-white"
+              onClick={handleSave}
+            >
+              Save Flow
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
