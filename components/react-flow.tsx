@@ -4,7 +4,7 @@ import { ChevronLeft, Minus, Plus, Save } from "lucide-react";
 import { useCallback, useState } from "react";
 import { LiaTrashAlt } from "react-icons/lia";
 import { PiArrowArcLeftBold, PiArrowArcRightBold } from "react-icons/pi";
-import ReactFlow, {
+import {
   addEdge,
   Background,
   Connection,
@@ -16,19 +16,22 @@ import ReactFlow, {
   NodeTypes,
   Panel,
   Position,
+  ReactFlow,
   ReactFlowProvider,
   useEdgesState,
   useNodesState,
   useReactFlow
 } from "reactflow";
 import "reactflow/dist/style.css";
+
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 
-// Types
+import { useRouter } from "next/navigation"; // ✅ Next.js App Router
+
 type ActionType = "email" | "apiCall" | "textbox" | null;
 
 type ActionNodeData = {
@@ -37,7 +40,6 @@ type ActionNodeData = {
   onNodeDelete: (id: string) => void;
 };
 
-// Toolbox Component
 const ActionToolbox = ({
   nodeId,
   onActionSelect,
@@ -71,7 +73,6 @@ const ActionToolbox = ({
   );
 };
 
-// Action Node Component
 const ActionNode = ({ id, data }: { id: string; data: ActionNodeData }) => {
   const { actionType, onNodeDelete } = data;
   const labelMap = {
@@ -92,7 +93,6 @@ const ActionNode = ({ id, data }: { id: string; data: ActionNodeData }) => {
   );
 };
 
-// Circle Node Component
 const CircleNode = ({
   color,
   label,
@@ -120,7 +120,6 @@ const CircleNode = ({
   </div>
 );
 
-// Node Types
 const nodeTypes: NodeTypes = {
   startNode: ({ data }) => (
     <CircleNode
@@ -141,7 +140,6 @@ const nodeTypes: NodeTypes = {
   actionNode: ActionNode
 };
 
-// Initial state for nodes and edges
 const initialNodes: Node[] = [
   {
     id: "1",
@@ -161,30 +159,26 @@ const initialEdges: Edge[] = [
   { id: "1-2", source: "1", target: "2", type: "custom" }
 ];
 
-// Flow Diagram Component
 function FlowDiagram() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [toolboxNodeId, setToolboxNodeId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const reactFlow = useReactFlow();
+  const router = useRouter(); // ✅ Next.js router
 
-  // Save modal states
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [flowName, setFlowName] = useState("");
   const [flowDescription, setFlowDescription] = useState("");
 
-  // Handle Save: for demo, log details to console
   const handleSave = () => {
     console.log("Flow Name:", flowName);
     console.log("Description:", flowDescription);
     console.log("Nodes:", nodes);
     console.log("Edges:", edges);
     setShowSaveModal(false);
-    // Implement your save logic here (e.g. API call)
   };
 
-  // Toolbox selection for action node type
   const handleActionSelect = (nodeId: string, actionType: ActionType) => {
     setNodes((nds) =>
       nds.map((node) =>
@@ -196,7 +190,6 @@ function FlowDiagram() {
     setToolboxNodeId(null);
   };
 
-  // Delete a node and reconnect its edges
   const handleNodeDelete = (nodeId: string) => {
     const incoming = edges.find((e) => e.target === nodeId);
     const outgoing = edges.find((e) => e.source === nodeId);
@@ -207,16 +200,11 @@ function FlowDiagram() {
         target: outgoing.target,
         type: "custom"
       };
-      setEdges((eds) => [
-        ...eds.filter(
-          (e) =>
-            e.source !== nodeId &&
-            e.target !== nodeId &&
-            e.id !== incoming.id &&
-            e.id !== outgoing.id
-        ),
-        newEdge
-      ]);
+      setEdges((eds) =>
+        eds
+          .filter((e) => e.source !== nodeId && e.target !== nodeId)
+          .concat(newEdge)
+      );
     } else {
       setEdges((eds) =>
         eds.filter((e) => e.source !== nodeId && e.target !== nodeId)
@@ -225,7 +213,6 @@ function FlowDiagram() {
     setNodes((nds) => nds.filter((n) => n.id !== nodeId));
   };
 
-  // Custom edge with the + button to add a node in between
   const edgeTypes: EdgeTypes = {
     custom: ({ id, source, target, sourceX, sourceY, targetX, targetY }) => {
       const edgePath = `M ${sourceX} ${sourceY} L ${targetX} ${targetY}`;
@@ -295,11 +282,11 @@ function FlowDiagram() {
     [setEdges]
   );
 
-  // Zoom handlers
   const onZoomChange = (value: number) => {
     setZoom(value);
     reactFlow.zoomTo(value);
   };
+
   const onZoomIn = () => onZoomChange(Math.min(zoom + 0.1, 2));
   const onZoomOut = () => onZoomChange(Math.max(zoom - 0.1, 0.5));
   const resetZoom = () => {
@@ -310,12 +297,6 @@ function FlowDiagram() {
 
   return (
     <div className="w-full h-screen bg-[#f5f2e8] relative">
-      {/* External floating circle (e.g. zoom reset) */}
-      <div
-        className="absolute top-4 right-4 z-50 w-6 h-6  rounded-full cursor-pointer hover:opacity-90"
-        onClick={resetZoom}
-      />
-
       <ReactFlow
         nodes={nodes.map((node) =>
           node.type === "actionNode"
@@ -335,15 +316,17 @@ function FlowDiagram() {
       >
         <Background color="#000000" gap={16} size={1} />
 
-        {/* Top Panel */}
         <Panel position="top-left">
           <div className="flex gap-4 items-center justify-between p-4 bg-white border-b w-full">
-            <button className="flex items-center text-sm font-semibold underline text-gray-700 hover:text-gray-900">
+            {/* ✅ Go Back button using router.back() */}
+            <button
+              className="flex items-center text-sm font-semibold underline text-gray-700 hover:text-gray-900"
+              onClick={() => router.back()}
+            >
               <ChevronLeft className="w-4 h-4" />
               Go Back
             </button>
             <div className="text-sm font-semibold">Untitled</div>
-            {/* Red Save Button opens the Save Modal */}
             <Button
               variant="ghost"
               className="bg-none flex gap-2 items-center overflow-y-hidden"
@@ -401,9 +384,7 @@ function FlowDiagram() {
           <DialogHeader>
             <DialogTitle>Save your workflow</DialogTitle>
           </DialogHeader>
-
           <div className="space-y-4 mt-4 pb-4">
-            {/* added bottom padding */}
             <div>
               <Label htmlFor="flowName" className="mb-3 text-sm font-light">
                 Name
@@ -429,8 +410,6 @@ function FlowDiagram() {
               />
             </div>
           </div>
-
-          {/* Save button at bottom right */}
           <div className="flex justify-end mt-2">
             <Button
               className="bg-red-600 hover:bg-red-700 text-white"
