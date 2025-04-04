@@ -31,12 +31,13 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { ExecutionHistory } from "@/components/workflow/execution-history";
-import { Download, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BsPinAngleFill } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
+import { HiOutlineArrowDown } from "react-icons/hi";
 
 // Mock data for workflows
 const mockWorkflows = Array(15)
@@ -142,14 +143,14 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        <div className="bg-white overflow-hidden p-8">
+        <div className="bg-white overflow-hidden pb-8 pl-8 pr-8 pt-2 mb-10">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="font-semibold">Workflow Name</TableHead>
-                <TableHead className="font-semibold">ID</TableHead>
-                <TableHead className="font-semibold">Last Edited On</TableHead>
-                <TableHead className="font-semibold">Description</TableHead>
+              <TableRow className="border-b-2 border-[#F68B21]">
+                <TableHead className="font-medium">Workflow Name</TableHead>
+                <TableHead className="font-medium">ID</TableHead>
+                <TableHead className="font-medium">Last Edited On</TableHead>
+                <TableHead className="font-medium">Description</TableHead>
                 <TableHead className="w-[200px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -160,10 +161,16 @@ export default function DashboardPage() {
                     key={workflow.id}
                     className={expandedWorkflow === index ? "bg-gray-50" : ""}
                   >
-                    <TableCell>{workflow.name}</TableCell>
-                    <TableCell>{workflow.id}</TableCell>
-                    <TableCell>{workflow.lastEdited}</TableCell>
-                    <TableCell>{workflow.description}</TableCell>
+                    <TableCell className="pb-8 pt-8 text-[#4F4F4F]">
+                      {workflow.name}
+                    </TableCell>
+                    <TableCell className="font-light">{workflow.id}</TableCell>
+                    <TableCell className="font-light text-xs">
+                      {workflow.lastEdited}
+                    </TableCell>
+                    <TableCell className="font-light text-xs">
+                      {workflow.description}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-2">
                         <Button
@@ -182,6 +189,7 @@ export default function DashboardPage() {
                         <Button
                           variant="outline"
                           onClick={() => handleExecute(index)}
+                          className="text-xs"
                         >
                           Execute
                         </Button>
@@ -189,6 +197,7 @@ export default function DashboardPage() {
                         <Button
                           variant="outline"
                           onClick={() => handleEdit(workflow.id)}
+                          className="text-xs"
                         >
                           Edit
                         </Button>
@@ -232,7 +241,7 @@ export default function DashboardPage() {
                               <polyline points="18 15 12 9 6 15"></polyline>
                             </svg>
                           ) : (
-                            <Download className="h-5 w-5" />
+                            <HiOutlineArrowDown className="w-5 h-5" />
                           )}
                         </Button>
                       </div>
