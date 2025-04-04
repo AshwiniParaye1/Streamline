@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Streamline
 
-## Getting Started
+## 📝 Description
 
-First, run the development server:
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). Built with React, Next.js. Written in TypeScript, CSS, JavaScript.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🔧 Technologies Used
+
+- TypeScript
+- React
+- Next.js
+- Reactflow
+
+## 📦 Installation
+
+```sh
+git clone https://github.com/AshwiniParaye1/Streamline.git
+cd Streamline
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Login Credentials
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To log in, use the following credentials:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Username:** `admin@example.com`
+- **Password:** `password123`
 
-## Learn More
+## 📂 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+├── app
+│   ├── dashboard
+│   │   ├── page.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── login
+│   │   ├── page.tsx
+│   ├── page.tsx
+│   ├── workflow-editor
+│   │   ├── new
+│   │   │   ├── page.tsx
+├── components.json
+├── components
+│   ├── dashboard-header.tsx
+│   ├── modals
+│   │   ├── delete-workflow-modal.tsx
+│   │   ├── execute-workflow-modal.tsx
+│   │   ├── save-workflow-modal.tsx
+│   ├── react-flow.tsx
+│   ├── ui
+│   │   ├── button.tsx
+│   │   ├── checkbox.tsx
+│   │   ├── dialog.tsx
+│   │   ├── dropdown-menu.tsx
+│   │   ├── input.tsx
+│   │   ├── label.tsx
+│   │   ├── pagination.tsx
+│   │   ├── select.tsx
+│   │   ├── table.tsx
+│   │   ├── textarea.tsx
+│   ├── workflow
+│   │   ├── custom-edge.tsx
+│   │   ├── end-node.tsx
+│   │   ├── execution-history.tsx
+│   │   ├── start-node.tsx
+│   │   ├── task-node.tsx
+├── lib
+│   ├── api.ts
+│   ├── utils.ts
+├── package.json
+├── public
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤝 Contribution
 
-## Deploy on Vercel
+We welcome contributions! Here's how you can contribute:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1.  Fork the repository.
+2.  Create a new branch for your feature or bug fix.
+3.  Make your changes and commit them.
+4.  Push your changes to your fork.
+5.  Submit a pull request.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ❤️ Support
+
+Thank you for checking out Streamline! If you find it useful, consider giving it a star on GitHub!
