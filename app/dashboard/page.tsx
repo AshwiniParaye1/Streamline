@@ -31,10 +31,11 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { ExecutionHistory } from "@/components/workflow/execution-history";
-import { Download, MoreVertical, Star } from "lucide-react";
+import { Download, MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { BsPinAngleFill } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 
 // Mock data for workflows
@@ -152,7 +153,7 @@ export default function DashboardPage() {
                 <TableHead className="w-[200px]"></TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="">
               {workflows.slice(0, 8).map((workflow, index) => (
                 <>
                   <TableRow
@@ -170,11 +171,10 @@ export default function DashboardPage() {
                           size="icon"
                           onClick={() => toggleFavorite(index)}
                         >
-                          <Star
+                          <BsPinAngleFill
                             className={`h-5 w-5 ${
-                              workflow.isFavorite
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-400"
+                              workflow.isFavorite &&
+                              "fill-yellow-400 text-yellow-400"
                             }`}
                           />
                         </Button>
