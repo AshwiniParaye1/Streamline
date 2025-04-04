@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ export default function LoginPage() {
     if (email === validEmail && password === validPassword) {
       router.push("/dashboard");
     } else {
-      alert("Invalid email or password. Please try again.");
+      toast.error("Invalid email or password. Please try again.");
     }
   };
 
