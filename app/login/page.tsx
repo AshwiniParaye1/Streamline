@@ -18,8 +18,16 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, validate credentials against an API
-    router.push("/dashboard");
+
+    // Dummy credentials
+    const validEmail = "admin@example.com";
+    const validPassword = "password123";
+
+    if (email === validEmail && password === validPassword) {
+      router.push("/dashboard");
+    } else {
+      alert("Invalid email or password. Please try again.");
+    }
   };
 
   return (
@@ -69,7 +77,6 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="text-[#BDBDBD]"
             />
           </div>
 
