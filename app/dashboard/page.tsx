@@ -4,7 +4,6 @@
 
 import type React from "react";
 
-import { DashboardHeader } from "@/components/dashboard-header";
 import { DeleteWorkflowModal } from "@/components/modals/delete-workflow-modal";
 import { ExecuteWorkflowModal } from "@/components/modals/execute-workflow-modal";
 import { Button } from "@/components/ui/button";
@@ -33,8 +32,10 @@ import {
 } from "@/components/ui/table";
 import { ExecutionHistory } from "@/components/workflow/execution-history";
 import { Download, MoreVertical, Star } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FiSearch } from "react-icons/fi";
 
 // Mock data for workflows
 const mockWorkflows = Array(15)
@@ -115,14 +116,14 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <DashboardHeader />
+    <div className="flex min-h-screen flex-col bg-[#f9f6eb]">
+      {/* <DashboardHeader /> */}
+      <div className="flex gap-4 m-6 items-center">
+        <Image src={"/sidebar1.png"} alt="" width={30} height={30} />
+        <h1 className="text-xl font-semibold">Workflow Builder</h1>
+      </div>
 
       <main className="flex-1 container mx-auto py-6 px-4">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Workflow Builder</h1>
-        </div>
-
         <div className="flex justify-between items-center mb-6">
           <div className="relative w-full max-w-md">
             <Input
@@ -130,22 +131,9 @@ export default function DashboardPage() {
               placeholder="Search By Workflow Name/ID"
               value={searchQuery}
               onChange={handleSearch}
-              className="pl-10"
+              className="pl-5 bg-white"
             />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            <FiSearch className="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-[#CACACA]" />
           </div>
 
           <Button onClick={() => router.push("/workflow-editor/new")}>
@@ -153,7 +141,7 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white overflow-hidden p-8">
           <Table>
             <TableHeader>
               <TableRow>
@@ -168,7 +156,7 @@ export default function DashboardPage() {
               {workflows.slice(0, 8).map((workflow, index) => (
                 <>
                   <TableRow
-                    key={index}
+                    key={workflow.id}
                     className={expandedWorkflow === index ? "bg-gray-50" : ""}
                   >
                     <TableCell>{workflow.name}</TableCell>
@@ -295,7 +283,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
-
       {/* Modals */}
       {selectedWorkflowIndex !== null && (
         <>
