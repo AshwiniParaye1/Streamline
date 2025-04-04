@@ -1,5 +1,3 @@
-//app/dashboard/page.tsx
-
 "use client";
 
 import type React from "react";
@@ -34,7 +32,7 @@ import { ExecutionHistory } from "@/components/workflow/execution-history";
 import { MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { BsPinAngleFill } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { HiOutlineArrowDown } from "react-icons/hi";
@@ -156,9 +154,8 @@ export default function DashboardPage() {
             </TableHeader>
             <TableBody className="">
               {workflows.slice(0, 8).map((workflow, index) => (
-                <>
+                <Fragment key={workflow.id}>
                   <TableRow
-                    key={workflow.id}
                     className={expandedWorkflow === index ? "bg-gray-50" : ""}
                   >
                     <TableCell className="pb-8 pt-8 text-[#4F4F4F]">
@@ -254,7 +251,7 @@ export default function DashboardPage() {
                       </TableCell>
                     </TableRow>
                   )}
-                </>
+                </Fragment>
               ))}
             </TableBody>
           </Table>
