@@ -82,8 +82,8 @@ export default function DashboardPage() {
     setWorkflows(updatedWorkflows);
   };
 
-  const handleEdit = (id: string) => {
-    router.push(`/workflow-editor/${id.replace("#", "")}`);
+  const handleEdit = () => {
+    router.push(`#`);
   };
 
   const handleExecute = (index: number) => {
@@ -196,7 +196,7 @@ export default function DashboardPage() {
 
                         <Button
                           variant="outline"
-                          onClick={() => handleEdit(workflow.id)}
+                          onClick={() => handleEdit()}
                           className="text-xs"
                         >
                           Edit
